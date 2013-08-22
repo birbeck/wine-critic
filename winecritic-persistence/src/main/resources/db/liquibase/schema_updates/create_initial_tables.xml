@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="stewart">
+        <comment>Adding table for wines</comment>
+        <createTable tableName="wine">
+            <column name="id" type="bigint unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="winery" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="varietal" type="varchar(255)" />
+            <column name="vintage" type="smallint unsigned" />
+            <column name="appellation" type="varchar(255)" />
+            <column name="price" type="decimal(10,2)" />
+            <column name="type" type="enum('RED','WHITE','ROSE','SPARKLING','DESSERT')" />
+        </createTable>
+        <createIndex tableName="wine" indexName="ix_name">
+            <column name="name" />
+        </createIndex>
+        <createIndex tableName="wine" indexName="ix_winery">
+            <column name="winery" />
+        </createIndex>
+        <createIndex tableName="wine" indexName="ix_varietal">
+            <column name="varietal" />
+        </createIndex>
+
+        <!-- Liquibase is stupid and will only create the enum with the first two values, so we need to write the
+             alter statement manually
+        <sql>alter table wine add column type enum('RED','WHITE','ROSE','SPARKLING','DESSERT') default null</sql> -->
+    </changeSet>
+
+    <changeSet id="2" author="stewart">
+        <comment>Adding table for users</comment>
+        <createTable tableName="user">
+            <column name="id" type="bigint unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="username" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="stewart">
+        <comment>Adding table for user wine ratings</comment>
+        <createTable tableName="rating">
+            <column name="id" type="bigint unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="wineId" type="bigint unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="userId" type="bigint unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="rating" type="tinyint unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="review" type="text" />
+        </createTable>
+        <createIndex tableName="rating" indexName="ix_wine">
+            <column name="wineId" />
+        </createIndex>
+        <createIndex tableName="rating" indexName="ix_user">
+            <column name="userId" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="4" author="stewart">
+        <comment>Adding table for user wine favorites</comment>
+        <createTable tableName="favorite">
+            <column name="id" type="bigint unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="wineId" type="bigint unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="userId" type="bigint unsigned">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createIndex tableName="favorite" indexName="ix_user">
+            <column name="userId" />
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
