@@ -1,7 +1,7 @@
 package com.appsbybirbeck.winecritic.persistence.entity;
 
-import com.appsbybirbeck.winecritic.api.Wine;
-import com.appsbybirbeck.winecritic.api.WineType;
+import java.math.BigDecimal;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,12 +10,19 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.math.BigDecimal;
-import java.util.List;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import com.appsbybirbeck.winecritic.api.WineType;
+
+/**
+ * An entity used for storing and retrieving of Wine records.
+ *
+ * @author Stewart Gateley
+ */
 @Entity
 @Table(name = "wine")
-public class WineEntity extends AbstractAuditable<Long> implements Wine {
+public class WineEntity extends AbstractAuditable<Long> {
 
     private static final long serialVersionUID = 106968675823169898L;
 
@@ -44,7 +51,6 @@ public class WineEntity extends AbstractAuditable<Long> implements Wine {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "id")
     private List<WineRatingEntity> ratings;
 
-    @Override
     public String getName() {
         return name;
     }
@@ -53,7 +59,6 @@ public class WineEntity extends AbstractAuditable<Long> implements Wine {
         this.name = name;
     }
 
-    @Override
     public String getWinery() {
         return winery;
     }
@@ -62,7 +67,6 @@ public class WineEntity extends AbstractAuditable<Long> implements Wine {
         this.winery = winery;
     }
 
-    @Override
     public String getVarietal() {
         return varietal;
     }
@@ -71,7 +75,6 @@ public class WineEntity extends AbstractAuditable<Long> implements Wine {
         this.varietal = varietal;
     }
 
-    @Override
     public WineType getType() {
         return type;
     }
@@ -80,7 +83,6 @@ public class WineEntity extends AbstractAuditable<Long> implements Wine {
         this.type = type;
     }
 
-    @Override
     public Integer getVintage() {
         return vintage;
     }
@@ -89,7 +91,6 @@ public class WineEntity extends AbstractAuditable<Long> implements Wine {
         this.vintage = vintage;
     }
 
-    @Override
     public String getAppellation() {
         return appellation;
     }
@@ -98,7 +99,6 @@ public class WineEntity extends AbstractAuditable<Long> implements Wine {
         this.appellation = appellation;
     }
 
-    @Override
     public BigDecimal getPrice() {
         return price;
     }
@@ -109,6 +109,20 @@ public class WineEntity extends AbstractAuditable<Long> implements Wine {
 
     public List<WineRatingEntity> getRatings() {
         return ratings;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("name", name)
+                .append("winery", winery)
+                .append("varietal", varietal)
+                .append("type", type)
+                .append("vintage", vintage)
+                .append("appellation", appellation)
+                .append("price", price)
+                .append("ratings", ratings)
+                .toString();
     }
 
 }

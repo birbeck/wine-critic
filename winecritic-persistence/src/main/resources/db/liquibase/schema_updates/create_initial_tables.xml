@@ -31,10 +31,6 @@
         <createIndex tableName="wine" indexName="ix_varietal">
             <column name="varietal" />
         </createIndex>
-
-        <!-- Liquibase is stupid and will only create the enum with the first two values, so we need to write the
-             alter statement manually
-        <sql>alter table wine add column type enum('RED','WHITE','ROSE','SPARKLING','DESSERT') default null</sql> -->
     </changeSet>
 
     <changeSet id="2" author="stewart">
@@ -51,7 +47,7 @@
 
     <changeSet id="3" author="stewart">
         <comment>Adding table for user wine ratings</comment>
-        <createTable tableName="rating">
+        <createTable tableName="wine_rating">
             <column name="id" type="bigint unsigned" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" />
             </column>
@@ -61,15 +57,15 @@
             <column name="userId" type="bigint unsigned">
                 <constraints nullable="false" />
             </column>
-            <column name="rating" type="tinyint unsigned">
+            <column name="score" type="tinyint unsigned">
                 <constraints nullable="false" />
             </column>
             <column name="review" type="text" />
         </createTable>
-        <createIndex tableName="rating" indexName="ix_wine">
+        <createIndex tableName="wine_rating" indexName="ix_wine">
             <column name="wineId" />
         </createIndex>
-        <createIndex tableName="rating" indexName="ix_user">
+        <createIndex tableName="wine_rating" indexName="ix_user">
             <column name="userId" />
         </createIndex>
     </changeSet>

@@ -12,9 +12,9 @@ import javax.persistence.PreUpdate;
 import java.io.Serializable;
 
 /**
- * A base entity containing properties and listeners that apply to all derived entities.
+ * A base entity will automatically set the created and last modified timestamp of derived classes.
  *
- * @author Service Archetype
+ * @author Stewart Gateley
  */
 @MappedSuperclass
 @EntityListeners({AbstractAuditable.PrePersistListener.class, AbstractAuditable.PreUpdateListener.class})

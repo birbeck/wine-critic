@@ -1,7 +1,5 @@
 package com.appsbybirbeck.winecritic.persistence.entity;
 
-import com.appsbybirbeck.winecritic.api.WineRating;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,14 +7,21 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+/**
+ * An entity used for storing and retrieving of WineRating records.
+ *
+ * @author Stewart Gateley
+ */
 @Entity
-@Table(name = "rating")
-public class WineRatingEntity extends AbstractAuditable<Long> implements WineRating {
+@Table(name = "wine_rating")
+public class WineRatingEntity extends AbstractAuditable<Long> {
 
     private static final long serialVersionUID = -6537941792332562709L;
 
-    @Column(name = "rating", nullable = false)
-    private int rating;
+    @Column(name = "score", nullable = false)
+    private int score;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "wineId", nullable = false)
@@ -29,16 +34,14 @@ public class WineRatingEntity extends AbstractAuditable<Long> implements WineRat
     @Column(name = "review")
     private String review;
 
-    @Override
-    public int getRating() {
-        return rating;
+    public int getScore() {
+        return score;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    public void setScore(int score) {
+        this.score = score;
     }
 
-    @Override
     public WineEntity getWine() {
         return wineEntity;
     }
@@ -47,7 +50,6 @@ public class WineRatingEntity extends AbstractAuditable<Long> implements WineRat
         this.wineEntity = wineEntity;
     }
 
-    @Override
     public UserEntity getUser() {
         return userEntity;
     }
@@ -56,13 +58,22 @@ public class WineRatingEntity extends AbstractAuditable<Long> implements WineRat
         this.userEntity = userEntity;
     }
 
-    @Override
     public String getReview() {
         return review;
     }
 
     public void setReview(String review) {
         this.review = review;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("score", score)
+                .append("wine", wineEntity.getName())
+                .append("user", userEntity.getUsername())
+                .append("review", review.length() > 20 ? review.substring(0, 17) + "..." : review)
+                .toString();
     }
 
 }

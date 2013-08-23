@@ -30,17 +30,12 @@ public class WineRatingRepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private UserRepository userRepository;
 
-    //@Mock
     private WineEntity wineEntity;
 
-    //@Mock
     private UserEntity userEntity;
 
     @BeforeClass
     public void setUp() throws Exception {
-        //MockitoAnnotations.initMocks(this);
-        //when(wineEntity.getId()).thenReturn(1L) ;
-        //when(userEntity.getId()).thenReturn(1L);
         wineEntity = wineRepository.findOne(1L);
         userEntity = userRepository.findOne(1L);
     }
@@ -48,14 +43,14 @@ public class WineRatingRepositoryTest extends AbstractTestNGSpringContextTests {
     @Test()
     public void testSave_ValidRating() throws Exception {
         WineRatingEntity entity = new WineRatingEntity();
-        entity.setRating(1);
+        entity.setScore(1);
         entity.setWineEntity(wineEntity);
         entity.setUserEntity(userEntity);
         entity.setReview("Test Review");
         wineRatingRepository.save(entity);
 
         entity = wineRatingRepository.findOne(entity.getId());
-        Assert.assertEquals(entity.getRating(), 1);
+        Assert.assertEquals(entity.getScore(), 1);
         Assert.assertEquals(entity.getWine(), wineEntity);
         Assert.assertEquals(entity.getUser(), userEntity);
         Assert.assertEquals(entity.getReview(), "Test Review");
@@ -118,7 +113,7 @@ public class WineRatingRepositoryTest extends AbstractTestNGSpringContextTests {
     @Test(expectedExceptions = org.springframework.dao.DataAccessException.class)
     public void testCreateRating_UnsavedWineThrowsException() {
         final WineRatingEntity entity = new WineRatingEntity();
-        entity.setRating(1);
+        entity.setScore(1);
         entity.setWineEntity(new WineEntity());
         entity.setUserEntity(userEntity);
         wineRatingRepository.save(entity);
@@ -127,7 +122,7 @@ public class WineRatingRepositoryTest extends AbstractTestNGSpringContextTests {
     @Test(expectedExceptions = org.springframework.dao.DataAccessException.class)
     public void testCreateRating_UnsavedUserThrowsException() {
         final WineRatingEntity entity = new WineRatingEntity();
-        entity.setRating(1);
+        entity.setScore(1);
         entity.setWineEntity(wineEntity);
         entity.setUserEntity(new UserEntity());
         wineRatingRepository.save(entity);
@@ -136,7 +131,7 @@ public class WineRatingRepositoryTest extends AbstractTestNGSpringContextTests {
     @Test(expectedExceptions = org.springframework.dao.DataAccessException.class)
     public void testCreateRating_NullWineryThrowsException() {
         final WineRatingEntity entity = new WineRatingEntity();
-        entity.setRating(1);
+        entity.setScore(1);
         entity.setWineEntity(null);
         entity.setUserEntity(userEntity);
         wineRatingRepository.save(entity);
@@ -145,7 +140,7 @@ public class WineRatingRepositoryTest extends AbstractTestNGSpringContextTests {
     @Test(expectedExceptions = org.springframework.dao.DataAccessException.class)
     public void testCreateRating_NullUserThrowsException() {
         final WineRatingEntity entity = new WineRatingEntity();
-        entity.setRating(1);
+        entity.setScore(1);
         entity.setWineEntity(wineEntity);
         entity.setUserEntity(null);
         wineRatingRepository.save(entity);

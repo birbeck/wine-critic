@@ -1,15 +1,17 @@
 package com.appsbybirbeck.winecritic.api;
 
-public interface WineRating {
+/**
+ * Interface for getting information from WineRating classes.
+ *
+ * @author Stewart Gateley
+ */
+public interface WineRating extends Rating<Wine> {
 
-    Long getId();
-
-    int getRating();
-
-    String getReview();
-
+    /**
+     * Get the {@link Wine} that was rated.
+     *
+     * @return {@link Wine} of the rating.
+     */
     Wine getWine();
-
-    User getUser();
 
 }

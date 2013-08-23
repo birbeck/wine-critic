@@ -1,17 +1,23 @@
 package com.appsbybirbeck.winecritic.persistence.entity;
 
-import com.appsbybirbeck.winecritic.api.User;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.List;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+/**
+ * An entity used for storing and retrieving of User records.
+ *
+ * @author Stewart Gateley
+ */
 @Entity
 @Table(name = "user")
-public class UserEntity extends AbstractAuditable<Long> implements User {
+public class UserEntity extends AbstractAuditable<Long> {
 
     private static final long serialVersionUID = -7616630578067605283L;
 
@@ -21,7 +27,6 @@ public class UserEntity extends AbstractAuditable<Long> implements User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "id")
     private List<WineRatingEntity> ratings;
 
-    @Override
     public String getUsername() {
         return username;
     }
@@ -32,6 +37,14 @@ public class UserEntity extends AbstractAuditable<Long> implements User {
 
     public List<WineRatingEntity> getRatings() {
         return ratings;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("username", username)
+                .append("ratings", ratings)
+                .toString();
     }
 
 }
