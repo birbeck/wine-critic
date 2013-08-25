@@ -1,27 +1,42 @@
 package com.appsbybirbeck.winecritic.persistence.dao;
 
-import com.appsbybirbeck.winecritic.api.WineType;
-import com.appsbybirbeck.winecritic.persistence.entity.WineEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.transaction.annotation.Transactional;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
+
+import com.appsbybirbeck.winecritic.api.WineType;
+import com.appsbybirbeck.winecritic.persistence.entity.WineEntity;
+
+/**
+ * Tests {@link WineRepository}
+ *
+ * @author Stewart Gateley
+ */
 @ContextConfiguration(locations = {"classpath:winecritic-persistence-context-test.xml"})
-@TransactionConfiguration(defaultRollback = true)
-public class WineRepositoryTest extends AbstractTestNGSpringContextTests {
+public class WineRepositoryTest
+        extends AbstractTestNGSpringContextTests
+{
 
     @Autowired
     private WineRepository wineRepository;
 
+    @Transactional
+    @AfterMethod
+    public void tearDown() throws Exception {
+        wineRepository.deleteAll();
+    }
+
+    @Transactional
     @Test
-    public void testSave_AllFields() throws Exception {
-        WineEntity entity = new WineEntity();
+    public void testSave() throws Exception {
+        final WineEntity entity = new WineEntity();
         entity.setName("Test Wine");
         entity.setWinery("Test Winery");
         entity.setVarietal("Test Varietal");
@@ -31,16 +46,20 @@ public class WineRepositoryTest extends AbstractTestNGSpringContextTests {
         entity.setVintage(1995);
         wineRepository.save(entity);
 
-        entity = wineRepository.findOne(entity.getId());
-        Assert.assertEquals(entity.getName(), "Test Wine");
-        Assert.assertEquals(entity.getWinery(), "Test Winery");
-        Assert.assertEquals(entity.getVarietal(), "Test Varietal");
-        Assert.assertEquals(entity.getType(), WineType.RED);
-        Assert.assertEquals(entity.getAppellation(), "Test Appellation");
-        Assert.assertEquals(entity.getPrice(), new BigDecimal("19.99"));
-        Assert.assertEquals(entity.getVintage(), (Integer) 1995);
+        final WineEntity retrieved = wineRepository.findOne(entity.getId());
+        Assert.assertNotSame(retrieved, entity);
+        Assert.assertEquals(retrieved, entity);
+        Assert.assertNotNull(retrieved.getId());
+        Assert.assertEquals(retrieved.getName(), "Test Wine");
+        Assert.assertEquals(retrieved.getWinery(), "Test Winery");
+        Assert.assertEquals(retrieved.getVarietal(), "Test Varietal");
+        Assert.assertEquals(retrieved.getType(), WineType.RED);
+        Assert.assertEquals(retrieved.getAppellation(), "Test Appellation");
+        Assert.assertEquals(retrieved.getPrice(), new BigDecimal("19.99"));
+        Assert.assertEquals(retrieved.getVintage(), (Integer) 1995);
     }
 
+    @Transactional
     @Test
     public void testSave_OnlyRequiredFields() throws Exception {
         final WineEntity entity = new WineEntity();
@@ -49,6 +68,7 @@ public class WineRepositoryTest extends AbstractTestNGSpringContextTests {
         wineRepository.save(entity);
     }
 
+    @Transactional
     @Test(expectedExceptions = org.springframework.dao.DataAccessException.class)
     public void testSave_NullNameThrowsException() throws Exception {
         final WineEntity entity = new WineEntity();
@@ -57,6 +77,7 @@ public class WineRepositoryTest extends AbstractTestNGSpringContextTests {
         wineRepository.save(entity);
     }
 
+    @Transactional
     @Test(expectedExceptions = org.springframework.dao.DataAccessException.class)
     public void testSave_NullWineryThrowsException() throws Exception {
         final WineEntity entity = new WineEntity();
@@ -65,8 +86,11 @@ public class WineRepositoryTest extends AbstractTestNGSpringContextTests {
         wineRepository.save(entity);
     }
 
+    @Transactional
     @Test
     public void testFindByNameLike() throws Exception {
+        createWine("Boulder Bluff Pinot Noir", "Adelsheim", "Pinot Noir");
+
         List<WineEntity> list = wineRepository.findByNameLike("Boulder Bluff Pinot Noir");
         Assert.assertEquals(list.size(), 1);
 
@@ -94,13 +118,20 @@ public class WineRepositoryTest extends AbstractTestNGSpringContextTests {
         list = wineRepository.findByNameLike("BOULDER BLUFF");
         Assert.assertEquals(list.size(), 1);
 
+        // Test trim
+        list = wineRepository.findByNameLike("   Pinot Noir   ");
+        Assert.assertEquals(list.size(), 1);
+
         // Test no match
         list = wineRepository.findByNameLike("Pinto");
         Assert.assertTrue(list.isEmpty());
     }
 
+    @Transactional
     @Test
     public void testFindByWineryLike() throws Exception {
+        createWine("Boulder Bluff Pinot Noir", "Adelsheim", "Pinot Noir");
+
         // Test full name
         List<WineEntity> list = wineRepository.findByWineryLike("Adelsheim");
         Assert.assertEquals(list.size(), 1);
@@ -125,13 +156,20 @@ public class WineRepositoryTest extends AbstractTestNGSpringContextTests {
         list = wineRepository.findByWineryLike("ADELSHEIM");
         Assert.assertEquals(list.size(), 1);
 
+        // Test trim
+        list = wineRepository.findByWineryLike("   Adelsheim   ");
+        Assert.assertEquals(list.size(), 1);
+
         // Test no match
         list = wineRepository.findByWineryLike("Adelshine");
         Assert.assertTrue(list.isEmpty());
     }
 
+    @Transactional
     @Test
     public void testFindByVarietalLike() throws Exception {
+        createWine("Boulder Bluff Pinot Noir", "Adelsheim", "Pinot Noir");
+
         // Test full name
         List<WineEntity> list = wineRepository.findByVarietalLike("Pinot Noir");
         Assert.assertEquals(list.size(), 1);
@@ -156,15 +194,23 @@ public class WineRepositoryTest extends AbstractTestNGSpringContextTests {
         list = wineRepository.findByVarietalLike("PINOT NOIR");
         Assert.assertEquals(list.size(), 1);
 
+        // Test trim
+        list = wineRepository.findByVarietalLike("   Pinot Noir   ");
+        Assert.assertEquals(list.size(), 1);
+
         // Test no match
         list = wineRepository.findByVarietalLike("Pinto");
         Assert.assertTrue(list.isEmpty());
     }
 
-    @Test(enabled = false)
-    public void testGetRatings() throws Exception {
-        final WineEntity entity = wineRepository.findOne(1L);
-        Assert.assertEquals(1, entity.getRatings().size());
+    private WineEntity createWine(final String name, final String winery, final String varietal) {
+        final WineEntity wineEntity = new WineEntity();
+        wineEntity.setName(name);
+        wineEntity.setWinery(winery);
+        wineEntity.setVarietal(varietal);
+        wineRepository.save(wineEntity);
+        logger.info(wineEntity.toString());
+        return wineEntity;
     }
 
 }

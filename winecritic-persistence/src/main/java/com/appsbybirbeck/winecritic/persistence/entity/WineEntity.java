@@ -1,14 +1,11 @@
 package com.appsbybirbeck.winecritic.persistence.entity;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -22,7 +19,9 @@ import com.appsbybirbeck.winecritic.api.WineType;
  */
 @Entity
 @Table(name = "wine")
-public class WineEntity extends AbstractAuditable<Long> {
+public class WineEntity
+        extends AbstractAuditable<Long>
+{
 
     private static final long serialVersionUID = 106968675823169898L;
 
@@ -48,72 +47,136 @@ public class WineEntity extends AbstractAuditable<Long> {
     @Column(name = "price")
     private BigDecimal price;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "id")
-    private List<WineRatingEntity> ratings;
-
+    /**
+     * Gets the name of this wine.
+     *
+     * @return name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of this wine.
+     *
+     * @param name name of this wine.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets the winery of this wine.
+     *
+     * @return winery
+     */
     public String getWinery() {
         return winery;
     }
 
+    /**
+     * Sets the winery of this wine.
+     *
+     * @param winery winery of this wine.
+     */
     public void setWinery(String winery) {
         this.winery = winery;
     }
 
+    /**
+     * Gets the varietal of this wine.
+     *
+     * @return varietal
+     */
     public String getVarietal() {
         return varietal;
     }
 
+    /**
+     * Sets the varietal of this wine.
+     *
+     * @param varietal varietal of this wine.
+     */
     public void setVarietal(String varietal) {
         this.varietal = varietal;
     }
 
+    /**
+     * Get the type of this wine.
+     *
+     * @return {@link WineType}
+     */
     public WineType getType() {
         return type;
     }
 
+    /**
+     * Sets the type of this wine.
+     *
+     * @param type {@link WineType}
+     */
     public void setType(WineType type) {
         this.type = type;
     }
 
+    /**
+     * Gets the vintage of this wine.
+     *
+     * @return vintage
+     */
     public Integer getVintage() {
         return vintage;
     }
 
+    /**
+     * Sets the vintage of this wine.
+     *
+     * @param vintage vintage of this wine.
+     */
     public void setVintage(Integer vintage) {
         this.vintage = vintage;
     }
 
+    /**
+     * Gets the appellation of this wine.
+     *
+     * @return appellation
+     */
     public String getAppellation() {
         return appellation;
     }
 
+    /**
+     * Sets the appellation of this wine.
+     *
+     * @param appellation appellation of this wine.
+     */
     public void setAppellation(String appellation) {
         this.appellation = appellation;
     }
 
+    /**
+     * Gets the price of this wine.
+     *
+     * @return price
+     */
     public BigDecimal getPrice() {
         return price;
     }
 
+    /**
+     * Sets the price of this wine.
+     *
+     * @param price price of this wine.
+     */
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    public List<WineRatingEntity> getRatings() {
-        return ratings;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
+                .append("id", getId())
                 .append("name", name)
                 .append("winery", winery)
                 .append("varietal", varietal)
@@ -121,7 +184,7 @@ public class WineEntity extends AbstractAuditable<Long> {
                 .append("vintage", vintage)
                 .append("appellation", appellation)
                 .append("price", price)
-                .append("ratings", ratings)
+                .appendSuper(super.toString())
                 .toString();
     }
 

@@ -1,24 +1,26 @@
 package com.appsbybirbeck.winecritic.persistence.entity;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import java.io.Serializable;
-
 /**
- * A base entity will automatically set the created and last modified timestamp of derived classes.
+ * A base entity that will automatically set the created and last modified timestamp of derived classes.
  *
  * @author Stewart Gateley
  */
 @MappedSuperclass
-@EntityListeners({AbstractAuditable.PrePersistListener.class, AbstractAuditable.PreUpdateListener.class})
-abstract class AbstractAuditable<ID extends Serializable> extends AbstractPersistable<ID> {
+abstract class AbstractAuditable<ID extends Serializable>
+        extends AbstractPersistable<ID>
+{
 
     @Column(updatable = false, nullable = false)
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
@@ -46,32 +48,30 @@ abstract class AbstractAuditable<ID extends Serializable> extends AbstractPersis
         return lastModifiedDate;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("createdDate", createdDate)
+                .append("lastModifiedDate", lastModifiedDate)
+                .toString();
+    }
+
     /**
      * A listener applied to all persistent entities derived from this entity. Ensures that the {@link #lastModifiedDate}
      * and {@link #createdDate} are set before persisting a new record.
      */
-    public static class PrePersistListener {
-        @PrePersist
-        public void setAuditFields(final Object o) {
-            if (o instanceof AbstractAuditable) {
-                final DateTime now = new DateTime();
-                ((AbstractAuditable) o).createdDate = now;
-                ((AbstractAuditable) o).lastModifiedDate = now;
-            }
-        }
+    @PrePersist
+    void onPrePersist() {
+        lastModifiedDate = createdDate = new DateTime();
     }
 
     /**
      * A listener applied to all persistent entities derived from this entity. Ensures that the {@link #lastModifiedDate}
      * is updated before updating an existing record.
      */
-    public static class PreUpdateListener {
-        @PreUpdate
-        public void setAuditFields(final Object o) {
-            if (o instanceof AbstractAuditable) {
-                ((AbstractAuditable) o).lastModifiedDate = new DateTime();
-            }
-        }
+    @PreUpdate
+    void onPreUpdate() {
+        lastModifiedDate = new DateTime();
     }
 
 }

@@ -21,6 +21,12 @@
             <column name="appellation" type="varchar(255)" />
             <column name="price" type="decimal(10,2)" />
             <column name="type" type="enum('RED','WHITE','ROSE','SPARKLING','DESSERT')" />
+            <column name="createdDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastModifiedDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <createIndex tableName="wine" indexName="ix_name">
             <column name="name" />
@@ -42,6 +48,12 @@
             <column name="username" type="varchar(50)">
                 <constraints nullable="false" />
             </column>
+            <column name="createdDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastModifiedDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 
@@ -51,39 +63,27 @@
             <column name="id" type="bigint unsigned" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" />
             </column>
+            <column name="score" type="tinyint unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="review" type="text" />
             <column name="wineId" type="bigint unsigned">
                 <constraints nullable="false" />
             </column>
             <column name="userId" type="bigint unsigned">
                 <constraints nullable="false" />
             </column>
-            <column name="score" type="tinyint unsigned">
-                <constraints nullable="false" />
+            <column name="createdDate" type="datetime">
+                <constraints nullable="false"/>
             </column>
-            <column name="review" type="text" />
+            <column name="lastModifiedDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <createIndex tableName="wine_rating" indexName="ix_wine">
             <column name="wineId" />
         </createIndex>
         <createIndex tableName="wine_rating" indexName="ix_user">
-            <column name="userId" />
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="4" author="stewart">
-        <comment>Adding table for user wine favorites</comment>
-        <createTable tableName="favorite">
-            <column name="id" type="bigint unsigned" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="wineId" type="bigint unsigned">
-                <constraints nullable="false" />
-            </column>
-            <column name="userId" type="bigint unsigned">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        <createIndex tableName="favorite" indexName="ix_user">
             <column name="userId" />
         </createIndex>
     </changeSet>
