@@ -5,7 +5,9 @@ package com.appsbybirbeck.winecritic.api;
  *
  * @author Stewart Gateley
  */
-public interface WineRating extends Rating<Wine> {
+public interface WineRating
+        extends Rating<Wine>
+{
 
     /**
      * Get the {@link Wine} that was rated.

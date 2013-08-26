@@ -7,7 +7,9 @@ import java.util.List;
  *
  * @author Stewart Gateley
  */
-public interface WineList extends List<Wine> {
+public interface WineList
+        extends List<Wine>
+{
 
     /**
      * A collection of {@link Wine}.

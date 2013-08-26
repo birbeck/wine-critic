@@ -11,6 +11,7 @@
     <modules>
         <module>winecritic-api</module>
         <module>winecritic-persistence</module>
+        <module>winecritic-service</module>
     </modules>
 
     <properties>
